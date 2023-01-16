@@ -1,1 +1,48 @@
-test
+<?php
+
+// Read the CSV file into an array
+$services = array_map('str_getcsv', file('services.csv'));
+
+// Get the country code from the command line argument
+$countryCode = strtoupper($argv[1]);
+
+// Initialize an array to store the services for the specified country
+$filteredServices = array();
+
+// Loop through the services and filter by country code
+foreach ($services as $service) {
+    if (strtoupper($service[3]) == $countryCode) {
+        $filteredServices[] = $service;
+    }
+}
+
+// Print the filtered services
+if (count($filteredServices) > 0) {
+    foreach ($filteredServices as $service) {
+        echo "Ref Code: ".$service[0]." Center: ".$service[1]." Service: ".$service[2]."\n";
+    }
+} else {
+    echo "No services found for country code " . $countryCode . "\n";
+}
+
+// Initialize an array to store the service count for each country
+$countryTotals = array();
+
+// Loop through the services and add to the country total
+foreach ($services as $service) {
+    $serviceCountryCode = strtoupper($service[3]);
+    if (!isset($countryTotals[$serviceCountryCode])) {
+        $countryTotals[$serviceCountryCode] = 1;
+    } else {
+        $countryTotals[$serviceCountryCode]++;
+    }
+}
+
+// Print the country totals
+foreach ($countryTotals as $country => $total) {
+    echo $country . ": " . $total . "\n";
+}
+
+/*This code will convert the input country code and the country codes in the CSV file to uppercase before comparing them, ensuring a case-insensitive match. This way, even if the input or the CSV country codes are in lowercase, the program will work correctly.
+
+/* You can run the program by typing php programname.php countrycode on your command line, where programname.php is the name of the file you saved the program to, and countrycode is the country code you want to query.
